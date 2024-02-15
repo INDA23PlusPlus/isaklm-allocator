@@ -11,6 +11,7 @@ class HeapAlloc
 
 	struct MemoryBlock
 	{
+		void* pointer;
 		int64_t start;
 		int64_t bytes;
 		int64_t prior_block_index;
@@ -55,11 +56,16 @@ public:
 	{
 		int64_t new_block_start;
 
+		void* new_pointer;
+
 		if (heap_index + bytes <= heap_size)
 		{
 			new_block_start = heap_index;
 
-			memory_blocks[memory_block_count] = { new_block_start, bytes, memory_block_count - 1, memory_block_count + 1 };
+			new_pointer = heap_pointer + new_block_start;
+
+
+			memory_blocks[memory_block_count] = { new_pointer, new_block_start, bytes, memory_block_count - 1, memory_block_count + 1 };
 
 			heap_index += bytes;
 		}
@@ -84,15 +90,18 @@ public:
 			}
 
 
-			assert(found_space, "Heap ran out of space.");
+			assert(found_space);
 
 			MemoryBlock current_block = memory_blocks[current_block_index];
 
 			new_block_start = current_block.start + current_block.bytes;
-			
-			memory_blocks[memory_block_count] = { new_block_start, bytes, current_block_index, current_block.next_block_index };
 
-			memory_blocks[current_block_index] = { current_block.start, current_block.bytes, current_block.prior_block_index, memory_block_count };
+			new_pointer = heap_pointer + new_block_start;
+
+			
+			memory_blocks[memory_block_count] = { new_pointer, new_block_start, bytes, current_block_index, current_block.next_block_index };
+
+			memory_blocks[current_block_index] = { current_block.pointer, current_block.start, current_block.bytes, current_block.prior_block_index, memory_block_count };
 		}
 
 		++memory_block_count;
@@ -102,29 +111,25 @@ public:
 			add_memory_blocks();
 		}
 
-		return heap_pointer + new_block_start;
+		return new_pointer;
 	}
 
 	void dealloc(void* pointer)
 	{
-		bool found_block = false;
-
-		int64_t block_index = 0;
+		int64_t block_index = -1;
 
 		for (int i = 0; i < memory_block_count; ++i)
 		{
-			if ((int64_t)heap_pointer + memory_blocks[block_index].start == (int64_t)(char*)pointer)
+			if (pointer == memory_blocks[i].pointer)
 			{
-				found_block = true;
+				block_index = i;
 
 				break;
 			}
-
-			block_index = memory_blocks[block_index].next_block_index;
 		}
 
 
-		assert(found_block, "Could not find block.");
+		assert(block_index != -1);
 
 		{
 			MemoryBlock memory_block = memory_blocks[block_index];

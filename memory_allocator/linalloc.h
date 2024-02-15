@@ -25,7 +25,7 @@ public:
 
 	void* alloc(size_t bytes)
 	{
-		assert(heap_index + bytes <= heap_size, "Heap ran out of memory.");
+		assert(heap_index + bytes <= heap_size);
 
 		heap_index += bytes;
 
