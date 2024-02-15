@@ -8,9 +8,16 @@ int main()
 	LinearAlloc linear_allocator(1024 * 1024 * 1024);
 
 	int* mem1 = (int*)heap_allocator.alloc(1024);
+	int* mem2 = (int*)heap_allocator.alloc(1024);
+	int* mem3 = (int*)heap_allocator.alloc(1024);
+	int* mem4 = (int*)heap_allocator.alloc(1024);
+
+	heap_allocator.dealloc(mem4);
+	heap_allocator.dealloc(mem3);
+	heap_allocator.dealloc(mem2);
 	heap_allocator.dealloc(mem1);
 
-	int* mem2 = (int*)linear_allocator.alloc(1024);
+	int* mem5 = (int*)linear_allocator.alloc(1024);
 	linear_allocator.dealloc();
 
 
