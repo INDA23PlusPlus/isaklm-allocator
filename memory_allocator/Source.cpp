@@ -17,7 +17,7 @@ int main()
 	heap_allocator.dealloc(mem2);
 	heap_allocator.dealloc(mem3);
 
-	int* mem5 = (int*)linear_allocator.alloc(1024);
+	uint16_t* mem5 = (uint16_t*)linear_allocator.alloc(1024);
 	linear_allocator.dealloc();
 
 
