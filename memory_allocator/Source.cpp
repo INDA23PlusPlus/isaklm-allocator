@@ -7,10 +7,10 @@ int main()
 	HeapAlloc heap_allocator(1024 * 1024 * 1024);
 	LinearAlloc linear_allocator(1024 * 1024 * 1024);
 
-	char* mem1 = (char*)heap_allocator.alloc(1024);
-	char* mem2 = (char*)heap_allocator.alloc(1024);
+	int* mem1 = (int*)heap_allocator.alloc(1024);
+	float* mem2 = (float*)heap_allocator.alloc(1024);
 	char* mem3 = (char*)heap_allocator.alloc(1024);
-	char* mem4 = (char*)heap_allocator.alloc(1024);
+	double* mem4 = (double*)heap_allocator.alloc(1024);
 
 	heap_allocator.dealloc(mem1);
 	heap_allocator.dealloc(mem4);
